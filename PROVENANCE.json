@@ -1,0 +1,147 @@
+{
+  "number": 18,
+  "title": "Chest Xray Disease Classifier",
+  "slug": "chest-xray-disease-classifier",
+  "start": "2025-11-04",
+  "end": "2025-11-21",
+  "repo": "brucechou1983/CheXNet-Keras",
+  "branch": "master",
+  "license": "MIT",
+  "note": "Archived Keras CheXNet implementation; educational only, not validated medical diagnosis or the earlier ensemble.",
+  "sha": "b80afc83a3b3550fae3d7acc27b4cfa75272517a",
+  "archive_sha256": "5bcc64d3880a61b3236abfd22ad82f6ff997a5d2146cf4093d625c5f4ed68c14",
+  "imported_at": "2026-10-28T21:31:51.133915+00:00",
+  "history": "Reconstructed import history; dates are not dates of original development.",
+  "upstream_files": {
+    "upstream/.gitignore": {
+      "sha256": "646e99dbb95b4b3de524b9e11a6289e1b4da115cf3811755a30c6da0e82defdf",
+      "mode": "100644",
+      "bytes": 164
+    },
+    "upstream/LICENSE": {
+      "sha256": "a5851bd6d8191fe0dd46f30b5c2b665a2747f4967ca47963073f7bfa93109971",
+      "mode": "100644",
+      "bytes": 1077
+    },
+    "upstream/README.md": {
+      "sha256": "77d39710652efcd907277d5ea32537761e2b810650499aef2cdaff9203c15038",
+      "mode": "100644",
+      "bytes": 3702
+    },
+    "upstream/augmenter.py": {
+      "sha256": "bc22373f4ef2ed6781941ac971dad183d3d76691b518fdfd7645292f50855c6d",
+      "mode": "100644",
+      "bytes": 129
+    },
+    "upstream/callback.py": {
+      "sha256": "636787eccc81870d8923cba91d6c182e7adc4d4a9e4c2cedc4b352928bda3373",
+      "mode": "100644",
+      "bytes": 6525
+    },
+    "upstream/cam.py": {
+      "sha256": "7f226a83d21ba8a91f56d1cd58010540e8b028fa1f52338a3f7607f4bde4aa8a",
+      "mode": "100644",
+      "bytes": 4920
+    },
+    "upstream/cam_example.png": {
+      "sha256": "e1d7d7796bfb6d26f74d132c5f0704ca2f20f5be02473993b2e385c19029ea2e",
+      "mode": "100644",
+      "bytes": 788770
+    },
+    "upstream/data/default_split/dev.csv": {
+      "sha256": "7672e567532b3e3a5c83c6437a6d503705ccb32a8e8b5e4dd38ea273bd142a3f",
+      "mode": "100644",
+      "bytes": 408774
+    },
+    "upstream/data/default_split/test.csv": {
+      "sha256": "94e76662cac84be747f99f43cdd2d18974fab78671c7f57a66269527c3e3efc1",
+      "mode": "100644",
+      "bytes": 98263
+    },
+    "upstream/data/default_split/train.csv": {
+      "sha256": "40c37a222a60fe8afdf9a70e9faa5c46782a0eea542f0044f4e718032bcef7ed",
+      "mode": "100644",
+      "bytes": 6728578
+    },
+    "upstream/generator.py": {
+      "sha256": "a2305ba39c3efc4d5792faeecc7cc009d14cb4a06fed7d340acc123a8d5301f6",
+      "mode": "100644",
+      "bytes": 3391
+    },
+    "upstream/models/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "100644",
+      "bytes": 0
+    },
+    "upstream/models/keras.py": {
+      "sha256": "ce791161642beb64f1ff4cd9a13fc215394e1bfea6d9ca4315b6f6cb1bbbdfef",
+      "mode": "100644",
+      "bytes": 3082
+    },
+    "upstream/requirements.txt": {
+      "sha256": "fd83c4108e3294d02b872a50963bd9a1c8c8efcdcab6f64ca8416f14f362494c",
+      "mode": "100644",
+      "bytes": 183
+    },
+    "upstream/sample_config.ini": {
+      "sha256": "887c3e5a8ee2b4ace07cc1efa05986b2edf6fc596003949f16899ff2d810dccc",
+      "mode": "100644",
+      "bytes": 2363
+    },
+    "upstream/test.py": {
+      "sha256": "04664a89a7dd1482650a9f07da19e8073fc81ace57f6583faca431d35e61a1a9",
+      "mode": "100644",
+      "bytes": 3204
+    },
+    "upstream/train.py": {
+      "sha256": "c1b56cc79238df5c3b91a5e6dc2f2ca5bd911287cbb69fdbc8bc0836377aaf86",
+      "mode": "100644",
+      "bytes": 8595
+    },
+    "upstream/utility.py": {
+      "sha256": "2ca3e6061b62cd15efef3bd6d5d29843f545d5ff6f4560c84f6ab4771a54e80d",
+      "mode": "100644",
+      "bytes": 747
+    },
+    "upstream/weights.py": {
+      "sha256": "392e5f3269e4d7344261fcf897ddd3abdf9d4964286b2e6902348744526349fb",
+      "mode": "100644",
+      "bytes": 1013
+    }
+  },
+  "excluded_git_metadata": [],
+  "history_repair": {
+    "pattern": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "approved_calendar": true,
+    "seed": 20251028,
+    "previous_main": "763091ff1e7d08284bacc13f522c1d12a4eeee1d",
+    "daily_counts": {
+      "2025-11-04": 2,
+      "2025-11-05": 1,
+      "2025-11-06": 2,
+      "2025-11-07": 1,
+      "2025-11-08": 0,
+      "2025-11-09": 4,
+      "2025-11-10": 2,
+      "2025-11-11": 2,
+      "2025-11-12": 2,
+      "2025-11-13": 0,
+      "2025-11-14": 4,
+      "2025-11-15": 5,
+      "2025-11-16": 4,
+      "2025-11-17": 0,
+      "2025-11-18": 0,
+      "2025-11-19": 2,
+      "2025-11-20": 2,
+      "2025-11-21": 3
+    },
+    "description": "Reconstructed import timestamps; not original development dates."
+  }
+}
