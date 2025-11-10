@@ -78,3 +78,43 @@ class MultipleClassAUROC(Callback):
 
             # 1. copy best model
             shutil.copy(self.weights_path, self.best_weights_path)
+
+            # 2. update log file
+            print(f"update log file: {self.best_auroc_log_path}")
+            with open(self.best_auroc_log_path, "a") as f:
+                f.write(f"(epoch#{epoch + 1}) auroc: {mean_auroc}, lr: {self.stats['lr']}\n")
+
+            # 3. write stats output, this is used for resuming the training
+            with open(self.stats_output_path, 'w') as f:
+                json.dump(self.stats, f)
+
+            print(f"update model file: {self.weights_path} -> {self.best_weights_path}")
+            self.stats["best_mean_auroc"] = mean_auroc
+            print("*********************************")
+        return
+
+
+class MultiGPUModelCheckpoint(Callback):
+    """
+    Checkpointing callback for multi_gpu_model
+    copy from https://github.com/keras-team/keras/issues/8463
+    """
+    def __init__(self, filepath, base_model, monitor='val_loss', verbose=0,
+                 save_best_only=False, save_weights_only=False,
+                 mode='auto', period=1):
+        super(Callback, self).__init__()
+        self.base_model = base_model
+        self.monitor = monitor
+        self.verbose = verbose
+        self.filepath = filepath
+        self.save_best_only = save_best_only
+        self.save_weights_only = save_weights_only
+        self.period = period
+        self.epochs_since_last_save = 0
+
+        if mode not in ['auto', 'min', 'max']:
+            warnings.warn('ModelCheckpoint mode %s is unknown, '
+                          'fallback to auto mode.' % (mode),
+                          RuntimeWarning)
+            mode = 'auto'
+
