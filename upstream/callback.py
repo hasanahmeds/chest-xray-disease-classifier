@@ -158,3 +158,11 @@ class MultiGPUModelCheckpoint(Callback):
                     else:
                         if self.verbose > 0:
                             print('Epoch %05d: %s did not improve' %
+                                  (epoch + 1, self.monitor))
+            else:
+                if self.verbose > 0:
+                    print('Epoch %05d: saving model to %s' % (epoch + 1, filepath))
+                if self.save_weights_only:
+                    self.base_model.save_weights(filepath, overwrite=True)
+                else:
+                    self.base_model.save(filepath, overwrite=True)
