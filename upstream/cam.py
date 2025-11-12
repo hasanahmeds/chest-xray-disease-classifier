@@ -78,3 +78,43 @@ def main():
     config_file = "./config.ini"
     cp = ConfigParser()
     cp.read(config_file)
+
+    # default config
+    output_dir = cp["DEFAULT"].get("output_dir")
+    base_model_name = cp["DEFAULT"].get("base_model_name")
+    class_names = cp["DEFAULT"].get("class_names").split(",")
+    image_source_dir = cp["DEFAULT"].get("image_source_dir")
+    image_dimension = cp["TRAIN"].getint("image_dimension")
+
+    # parse weights file path
+    output_weights_name = cp["TRAIN"].get("output_weights_name")
+    weights_path = os.path.join(output_dir, output_weights_name)
+    best_weights_path = os.path.join(output_dir, f"best_{output_weights_name}")
+
+    # CAM config
+    bbox_list_file = cp["CAM"].get("bbox_list_file")
+    use_best_weights = cp["CAM"].getboolean("use_best_weights")
+
+    print("** load model **")
+    if use_best_weights:
+        print("** use best weights **")
+        model_weights_path = best_weights_path
+    else:
+        print("** use last weights **")
+        model_weights_path = weights_path
+    model_factory = ModelFactory()
+    model = model_factory.get_model(
+        class_names,
+        model_name=base_model_name,
+        use_base_weights=False,
+        weights_path=model_weights_path)
+
+    print("read bbox list file")
+    df_images = pd.read_csv(bbox_list_file, header=None, skiprows=1)
+    df_images.columns = ["file_name", "label", "x", "y", "w", "h"]
+
+    print("create a generator for loading transformed images")
+    cam_sequence = AugmentedImageSequence(
+        dataset_csv_file=os.path.join(output_dir, "test.csv"),
+        class_names=class_names,
+        source_image_dir=image_source_dir,
