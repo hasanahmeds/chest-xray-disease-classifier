@@ -38,3 +38,43 @@ def create_cam(df_g, output_dir, image_source_dir, model, generator, class_names
     index = class_names.index(label)
 
     output_path = os.path.join(output_dir, f"{label}.{file_name}")
+
+    img_transformed = generator.load_image(file_name)
+
+    # CAM overlay
+    # Get the 512 input weights to the softmax.
+    class_weights = model.layers[-1].get_weights()[0]
+    final_conv_layer = get_output_layer(model, "bn")
+    get_output = kb.function([model.layers[0].input], [final_conv_layer.output, model.layers[-1].output])
+    [conv_outputs, predictions] = get_output([np.array([img_transformed])])
+    conv_outputs = conv_outputs[0, :, :, :]
+
+    # Create the class activation map.
+    cam = np.zeros(dtype=np.float32, shape=(conv_outputs.shape[:2]))
+    for i, w in enumerate(class_weights[index]):
+        cam += w * conv_outputs[:, :, i]
+    # print(f"predictions: {predictions}")
+    cam /= np.max(cam)
+    cam = cv2.resize(cam, img_ori.shape[:2])
+    heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
+    heatmap[np.where(cam < 0.2)] = 0
+    img = heatmap * 0.5 + img_ori
+
+    # add label & rectangle
+    # ratio = output dimension / 1024
+    ratio = 1
+    x1 = int(df_g["x"] * ratio)
+    y1 = int(df_g["y"] * ratio)
+    x2 = int((df_g["x"] + df_g["w"]) * ratio)
+    y2 = int((df_g["y"] + df_g["h"]) * ratio)
+    cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+    cv2.putText(img, text=label, org=(5, 20), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.8, color=(0, 0, 255), thickness=1)
+    cv2.imwrite(output_path, img)
+
+
+def main():
+    # parser config
+    config_file = "./config.ini"
+    cp = ConfigParser()
+    cp.read(config_file)
