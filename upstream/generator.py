@@ -78,3 +78,14 @@ class AugmentedImageSequence(Sequence):
         if self.shuffle:
             raise ValueError("""
             You're trying run get_y_true() when generator option 'shuffle_on_epoch_end' is True.
+            """)
+        return self.y[:self.steps*self.batch_size, :]
+
+    def prepare_dataset(self):
+        df = self.dataset_df.sample(frac=1., random_state=self.random_state)
+        self.x_path, self.y = df["Image Index"].as_matrix(), df[self.class_names].as_matrix()
+
+    def on_epoch_end(self):
+        if self.shuffle:
+            self.random_state += 1
+            self.prepare_dataset()
