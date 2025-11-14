@@ -118,3 +118,30 @@ def main():
         dataset_csv_file=os.path.join(output_dir, "test.csv"),
         class_names=class_names,
         source_image_dir=image_source_dir,
+        batch_size=1,
+        target_size=(image_dimension, image_dimension),
+        augmenter=None,
+        steps=1,
+        shuffle_on_epoch_end=False,
+    )
+
+    image_output_dir = os.path.join(output_dir, "cam")
+    if not os.path.isdir(image_output_dir):
+        os.makedirs(image_output_dir)
+
+    print("create CAM")
+    df_images.apply(
+        lambda g: create_cam(
+            df_g=g,
+            output_dir=image_output_dir,
+            image_source_dir=image_source_dir,
+            model=model,
+            generator=cam_sequence,
+            class_names=class_names,
+        ),
+        axis=1,
+    )
+
+
+if __name__ == "__main__":
+    main()
