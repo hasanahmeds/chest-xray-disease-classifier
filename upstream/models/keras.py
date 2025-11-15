@@ -38,3 +38,43 @@ class ModelFactory:
             ),
             InceptionResNetV2=dict(
                 input_shape=(299, 299, 3),
+                module_name="inception_resnet_v2",
+                last_conv_layer="conv_7b_ac",
+            ),
+            NASNetMobile=dict(
+                input_shape=(224, 224, 3),
+                module_name="nasnet",
+                last_conv_layer="activation_188",
+            ),
+            NASNetLarge=dict(
+                input_shape=(331, 331, 3),
+                module_name="nasnet",
+                last_conv_layer="activation_260",
+            ),
+        )
+
+    def get_last_conv_layer(self, model_name):
+        return self.models_[model_name]["last_conv_layer"]
+
+    def get_input_size(self, model_name):
+        return self.models_[model_name]["input_shape"][:2]
+
+    def get_model(self, class_names, model_name="DenseNet121", use_base_weights=True,
+                  weights_path=None, input_shape=None):
+
+        if use_base_weights is True:
+            base_weights = "imagenet"
+        else:
+            base_weights = None
+
+        base_model_class = getattr(
+            importlib.import_module(
+                f"keras.applications.{self.models_[model_name]['module_name']}"
+            ),
+            model_name)
+
+        if input_shape is None:
+            input_shape = self.models_[model_name]["input_shape"]
+
+        img_input = Input(shape=input_shape)
+
