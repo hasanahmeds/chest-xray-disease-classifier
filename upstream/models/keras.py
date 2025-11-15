@@ -78,3 +78,20 @@ class ModelFactory:
 
         img_input = Input(shape=input_shape)
 
+        base_model = base_model_class(
+            include_top=False,
+            input_tensor=img_input,
+            input_shape=input_shape,
+            weights=base_weights,
+            pooling="avg")
+        x = base_model.output
+        predictions = Dense(len(class_names), activation="sigmoid", name="predictions")(x)
+        model = Model(inputs=img_input, outputs=predictions)
+
+        if weights_path == "":
+            weights_path = None
+
+        if weights_path is not None:
+            print(f"load model weights_path: {weights_path}")
+            model.load_weights(weights_path)
+        return model
