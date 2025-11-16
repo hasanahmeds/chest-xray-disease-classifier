@@ -118,3 +118,43 @@ def main():
         print(class_weights)
 
         print("** load model **")
+        if use_trained_model_weights:
+            if use_best_weights:
+                model_weights_file = os.path.join(output_dir, f"best_{output_weights_name}")
+            else:
+                model_weights_file = os.path.join(output_dir, output_weights_name)
+        else:
+            model_weights_file = None
+
+        model_factory = ModelFactory()
+        model = model_factory.get_model(
+            class_names,
+            model_name=base_model_name,
+            use_base_weights=use_base_model_weights,
+            weights_path=model_weights_file,
+            input_shape=(image_dimension, image_dimension, 3))
+
+        if show_model_summary:
+            print(model.summary())
+
+        print("** create image generators **")
+        train_sequence = AugmentedImageSequence(
+            dataset_csv_file=os.path.join(output_dir, "train.csv"),
+            class_names=class_names,
+            source_image_dir=image_source_dir,
+            batch_size=batch_size,
+            target_size=(image_dimension, image_dimension),
+            augmenter=augmenter,
+            steps=train_steps,
+        )
+        validation_sequence = AugmentedImageSequence(
+            dataset_csv_file=os.path.join(output_dir, "dev.csv"),
+            class_names=class_names,
+            source_image_dir=image_source_dir,
+            batch_size=batch_size,
+            target_size=(image_dimension, image_dimension),
+            augmenter=augmenter,
+            steps=validation_steps,
+            shuffle_on_epoch_end=False,
+        )
+
