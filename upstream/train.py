@@ -78,3 +78,43 @@ def main():
         for dataset in datasets:
             shutil.copy(os.path.join(dataset_csv_dir, f"{dataset}.csv"), output_dir)
 
+        # get train/dev sample counts
+        train_counts, train_pos_counts = get_sample_counts(output_dir, "train", class_names)
+        dev_counts, _ = get_sample_counts(output_dir, "dev", class_names)
+
+        # compute steps
+        if train_steps == "auto":
+            train_steps = int(train_counts / batch_size)
+        else:
+            try:
+                train_steps = int(train_steps)
+            except ValueError:
+                raise ValueError(f"""
+                train_steps: {train_steps} is invalid,
+                please use 'auto' or integer.
+                """)
+        print(f"** train_steps: {train_steps} **")
+
+        if validation_steps == "auto":
+            validation_steps = int(dev_counts / batch_size)
+        else:
+            try:
+                validation_steps = int(validation_steps)
+            except ValueError:
+                raise ValueError(f"""
+                validation_steps: {validation_steps} is invalid,
+                please use 'auto' or integer.
+                """)
+        print(f"** validation_steps: {validation_steps} **")
+
+        # compute class weights
+        print("** compute class weights from training data **")
+        class_weights = get_class_weights(
+            train_counts,
+            train_pos_counts,
+            multiply=positive_weights_multiply,
+        )
+        print("** class_weights **")
+        print(class_weights)
+
+        print("** load model **")
