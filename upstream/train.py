@@ -38,3 +38,43 @@ def main():
     image_dimension = cp["TRAIN"].getint("image_dimension")
     train_steps = cp["TRAIN"].get("train_steps")
     patience_reduce_lr = cp["TRAIN"].getint("patience_reduce_lr")
+    min_lr = cp["TRAIN"].getfloat("min_lr")
+    validation_steps = cp["TRAIN"].get("validation_steps")
+    positive_weights_multiply = cp["TRAIN"].getfloat("positive_weights_multiply")
+    dataset_csv_dir = cp["TRAIN"].get("dataset_csv_dir")
+    # if previously trained weights is used, never re-split
+    if use_trained_model_weights:
+        # resuming mode
+        print("** use trained model weights **")
+        # load training status for resuming
+        training_stats_file = os.path.join(output_dir, ".training_stats.json")
+        if os.path.isfile(training_stats_file):
+            # TODO: add loading previous learning rate?
+            training_stats = json.load(open(training_stats_file))
+        else:
+            training_stats = {}
+    else:
+        # start over
+        training_stats = {}
+
+    show_model_summary = cp["TRAIN"].getboolean("show_model_summary")
+    # end parser config
+
+    # check output_dir, create it if not exists
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    running_flag_file = os.path.join(output_dir, ".training.lock")
+    if os.path.isfile(running_flag_file):
+        raise RuntimeError("A process is running in this directory!!!")
+    else:
+        open(running_flag_file, "a").close()
+
+    try:
+        print(f"backup config file to {output_dir}")
+        shutil.copy(config_file, os.path.join(output_dir, os.path.split(config_file)[1]))
+
+        datasets = ["train", "dev", "test"]
+        for dataset in datasets:
+            shutil.copy(os.path.join(dataset_csv_dir, f"{dataset}.csv"), output_dir)
+
