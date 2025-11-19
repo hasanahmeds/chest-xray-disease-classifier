@@ -158,3 +158,43 @@ def main():
             shuffle_on_epoch_end=False,
         )
 
+        output_weights_path = os.path.join(output_dir, output_weights_name)
+        print(f"** set output weights path to: {output_weights_path} **")
+
+        print("** check multiple gpu availability **")
+        gpus = len(os.getenv("CUDA_VISIBLE_DEVICES", "1").split(","))
+        if gpus > 1:
+            print(f"** multi_gpu_model is used! gpus={gpus} **")
+            model_train = multi_gpu_model(model, gpus)
+            # FIXME: currently (Keras 2.1.2) checkpoint doesn't work with multi_gpu_model
+            checkpoint = MultiGPUModelCheckpoint(
+                filepath=output_weights_path,
+                base_model=model,
+            )
+        else:
+            model_train = model
+            checkpoint = ModelCheckpoint(
+                 output_weights_path,
+                 save_weights_only=True,
+                 save_best_only=True,
+                 verbose=1,
+            )
+
+        print("** compile model with class weights **")
+        optimizer = Adam(lr=initial_learning_rate)
+        model_train.compile(optimizer=optimizer, loss="binary_crossentropy")
+        auroc = MultipleClassAUROC(
+            sequence=validation_sequence,
+            class_names=class_names,
+            weights_path=output_weights_path,
+            stats=training_stats,
+            workers=generator_workers,
+        )
+        callbacks = [
+            checkpoint,
+            TensorBoard(log_dir=os.path.join(output_dir, "logs"), batch_size=batch_size),
+            ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=patience_reduce_lr,
+                              verbose=1, mode="min", min_lr=min_lr),
+            auroc,
+        ]
+
