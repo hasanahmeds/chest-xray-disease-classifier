@@ -198,3 +198,31 @@ def main():
             auroc,
         ]
 
+        print("** start training **")
+        history = model_train.fit_generator(
+            generator=train_sequence,
+            steps_per_epoch=train_steps,
+            epochs=epochs,
+            validation_data=validation_sequence,
+            validation_steps=validation_steps,
+            callbacks=callbacks,
+            class_weight=class_weights,
+            workers=generator_workers,
+            shuffle=False,
+        )
+
+        # dump history
+        print("** dump history **")
+        with open(os.path.join(output_dir, "history.pkl"), "wb") as f:
+            pickle.dump({
+                "history": history.history,
+                "auroc": auroc.aurocs,
+            }, f)
+        print("** done! **")
+
+    finally:
+        os.remove(running_flag_file)
+
+
+if __name__ == "__main__":
+    main()
